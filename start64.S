@@ -3,7 +3,7 @@
 
 .global start64
 	mov $0x12345678, %rax
-
+	jmp start_kernel
 .section ".data64","aw"
 	.fill 4096,2,0
 
