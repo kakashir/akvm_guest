@@ -23,16 +23,16 @@ SECTIONS
 	. = 0x100000;
 	__kernel_32_start = .;
 
-	.text32 : ALIGN(4096) {
-		__text32_start = .;
-		start32.o(.text32)
-		__text32_end = .;
-	}
-
 	.data32 : ALIGN(4096) {
 		__data32_start = .;
 		start32.o(.data32)
 		__data32_end = .;
+	}
+
+	.text32 : ALIGN(4096) {
+		__text32_start = .;
+		start32.o(.text32)
+		__text32_end = .;
 	}
 
 	__kernel_32_end = .;
@@ -40,14 +40,7 @@ SECTIONS
 	. = 0xffff800000000000 + __kernel_32_end;
 	__kernel_64_start = .;
 
-	.text64 : AT(__kernel_32_end) ALIGN(4096)  {
-		__text64_start = .;
-		*(.text64)
-		*(.text)
-		__text64_end = .;
-	}
-
-	.data64 : ALIGN(4096) {
+	.data64 : AT(__kernel_32_end) ALIGN(4096) {
 		__data64_start = .;
 		*(.data64)
 		*(.data)
@@ -59,6 +52,13 @@ SECTIONS
 		*(.bss64)
 		*(.bss)
 		__bss64_end = .;
+	}
+
+	.text64 : ALIGN(4096)  {
+		__text64_start = .;
+		*(.text64)
+		*(.text)
+		__text64_end = .;
 	}
 
 	__kernel_64_end = .;
