@@ -1,9 +1,12 @@
+#include "config.h"
+
 ENTRY(start16)
 OUTPUT(binary)
+OUTPUT_FORMAT(KERNEL_OUTPUT_FORMAT)
 
 SECTIONS
 {
-	. = 0x0;
+	. = KERNEL_16_LOAD_PHY_ADDR;
 	__kernel_16_start = .;
 
 	.data16 : {
@@ -20,7 +23,7 @@ SECTIONS
 
 	__kernel_16_end = .;
 
-	. = 0x100000;
+	. = KERNEL_32_LOAD_PHY_ADDR;
 	__kernel_32_start = .;
 
 	.data32 : ALIGN(4096) {
@@ -37,7 +40,7 @@ SECTIONS
 
 	__kernel_32_end = .;
 
-	. = 0xffff800000000000 + __kernel_32_end;
+	. = KERNEL_64_LOAD_VA_ADDR + __kernel_32_end;
 	__kernel_64_start = .;
 
 	.data64 : AT(__kernel_32_end) ALIGN(4096) {

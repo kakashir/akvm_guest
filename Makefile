@@ -1,15 +1,17 @@
 asm_object = start16.o start32.o start64.o
 c_object = main.o
+h_object = config.h
 linker = linker.lds.S
-cc_flags = -O0 -g
+cc_flags = -O0 -g -no-pie -nostartfiles -nodefaultlibs -nolibc -nostdlib -nostdlib++
 
 binary: $(asm_object) $(c_object) $(linker)
-	ld -T $(linker) $(asm_object) $(c_object)
+	gcc -E -P -x c $(linker) > $(linker).out
+	gcc $(cc_flags) -T $(linker).out $(asm_object) $(c_object)
 
-$(asm_object): %.o: %.S
-	as -c "$<" -o "$@"
+$(asm_object): %.o: %.S $(h_object)
+	gcc $(cc_flags) -c "$<" -o "$@"
 
-$(c_object): %.o: %.c
+$(c_object): %.o: %.c $(h_object)
 	gcc $(cc_flags) -c "$<" -o "$@"
 
 .PHONY clean:

@@ -1,0 +1,10 @@
+#ifndef __CONFIG_H
+#define __CONFIG_H
+
+#define KERNEL_16_LOAD_PHY_ADDR  0x0
+#define KERNEL_32_LOAD_PHY_ADDR  0x100000
+#define KERNEL_64_LOAD_VA_ADDR   0xffff800000000000
+
+#define KERNEL_OUTPUT_FORMAT "elf64-x86-64"
+
+#endif
