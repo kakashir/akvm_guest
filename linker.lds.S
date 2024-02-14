@@ -40,10 +40,18 @@ SECTIONS
 
 	__kernel_32_end = .;
 
-	. = KERNEL_64_LOAD_VA_ADDR + __kernel_32_end;
 	__kernel_64_start = .;
 
-	.data64 : AT(ALIGN(__kernel_32_end, 4096)) ALIGN(4096) {
+	__kernel_64_low_start = .;
+
+	.text64_low : ALIGN(4096) {
+		start64.o(.text64_low)
+	}
+
+	__kernel_64_low_end = .;
+
+	. = KERNEL_64_LOAD_VA_ADDR + __kernel_64_low_end;
+	.data64 : AT(ALIGN(__kernel_64_low_end, 4096)) ALIGN(4096) {
 		__data64_start = .;
 		*(.data64)
 		*(.data)

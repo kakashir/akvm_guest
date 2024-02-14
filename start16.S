@@ -14,6 +14,8 @@ gdt:
 	.4byte 0x00cf9a00
 	.4byte 0x0000ffff /* 32 bit data*/
 	.4byte 0x00cf9200
+	.4byte 0x0000ffff /* 64 bit code */
+	.4byte 0x00af9a00
 gdt_tab_desc:
 	.2byte gdt_tab_desc - gdt
 	.4byte gdt

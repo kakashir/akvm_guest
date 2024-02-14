@@ -1,4 +1,13 @@
 .balign 4096
+.section ".text64_low","ax"
+.code64
+
+.global start64_low
+start64_low:
+	lea start64(%rip), %rcx
+	call *%rcx
+
+.balign 4096
 .section ".data64","aw"
 
 .balign 1
@@ -11,5 +20,6 @@
 
 .global start64
 start64:
-	mov $0x12345678, %rax
-	jmp start_kernel
+1:
+	lea start_kernel(%rip), %rcx
+	call *%rcx

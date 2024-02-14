@@ -1,0 +1,21 @@
+#ifndef __x86_H
+#define __x86_H
+
+#define X86_MSR_PAT 0x277
+#define X86_MSR_PAT_DEF_LOW 0x05010406ULL
+#define X86_MSR_PAT_DEF_HIGH 0x00000007ULL
+
+#define X86_MSR_EFER 0xc0000080
+#define X86_MSR_EFER_LME_BIT 8
+#define X86_MSR_EFER_LME 0x100
+
+#define X86_CR0_PG_BIT 31
+#define X86_CR0_PG 0x80000000
+
+#define X86_CR4_PAE_BIT 5
+#define X86_CR4_PAE 0x20
+
+#define X86_PAGE_SIZE_1G 0x40000000
+#define X86_PAGE_SIZE_4M 0x400000
+
+#endif
