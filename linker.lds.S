@@ -71,5 +71,6 @@ SECTIONS
 					  (__kernel_64_end - __kernel_64_start);
 	/DISCARD/ : {
 		*(.note.gnu.property)
+		*(.note.gnu.build-id)
 	}
 }
