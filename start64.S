@@ -1,11 +1,11 @@
+.balign 4096
 .section ".data64","aw"
-	.fill 4096,2,0
 
+.balign 1
 .section ".bss64","aw", @nobits
-	.byte 0
-
 .section ".bss","aw", @nobits
 
+.balign 8
 .section ".text64","ax"
 .code64
 

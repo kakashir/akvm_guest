@@ -9,13 +9,13 @@ SECTIONS
 	. = KERNEL_16_LOAD_PHY_ADDR;
 	__kernel_16_start = .;
 
-	.data16 : {
+	.data16 : ALIGN(4096) {
 		__data16_start = .;
 		start16.o(.data16)
 		__data16_end = .;
 	}
 
-	.text16 : {
+	.text16 : ALIGN(4096) {
 		__text16_start = .;
         start16.o(.text16);
 		__text16_end = .;
@@ -43,21 +43,21 @@ SECTIONS
 	. = KERNEL_64_LOAD_VA_ADDR + __kernel_32_end;
 	__kernel_64_start = .;
 
-	.data64 : AT(__kernel_32_end) ALIGN(4096) {
+	.data64 : AT(ALIGN(__kernel_32_end, 4096)) ALIGN(4096) {
 		__data64_start = .;
 		*(.data64)
 		*(.data)
 		__data64_end = .;
 	}
 
-	.bss64  : ALIGN(4096) {
+	.bss64  : ALIGN(1) {
 		__bss64_start = .;
 		*(.bss64)
 		*(.bss)
 		__bss64_end = .;
 	}
 
-	.text64 : ALIGN(4096)  {
+	.text64 : ALIGN(8)  {
 		__text64_start = .;
 		*(.text64)
 		*(.text)

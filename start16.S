@@ -1,3 +1,4 @@
+.balign 4096
 .section ".data16","aw"
 	.fill 2048, 1, 0
 stack_top:
@@ -16,7 +17,7 @@ gdt:
 gdt_tab_desc:
 	.2byte gdt_tab_desc - gdt
 	.4byte gdt
-
+.balign 4096
 .section ".text16","ax"
 .code16
 

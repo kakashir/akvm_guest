@@ -1,3 +1,4 @@
+.balign	4096
 .section ".data32","aw"
 	.balign	4096
 lv_2_page_table:
@@ -22,9 +23,12 @@ idt32_tab_desc:
 	.2byte idt32_tab_desc - idt32
 	.4byte idt32
 
+start64_target:
+	.quad start64
+
+.balign	4096
 .section ".text32","ax"
 .code32
-.balign 4
 
 .macro NULL_IDT_HANDLER from, to
 	mov	$\from, %esi
@@ -35,7 +39,6 @@ idt32_tab_desc:
 .endif
 .endm
 
-.balign 1
 __one_null_idt32_handler_start:
 NULL_IDT_HANDLER 0, 0
 __one_null_idt32_handler_end:
@@ -43,7 +46,6 @@ NULL_IDT_HANDLER 1, 100
 NULL_IDT_HANDLER 101, 200
 NULL_IDT_HANDLER 201, 255
 
-.balign 4
 null_idt32_handler:
 	/* DEAD! */
 	mov $0xff, %eax
