@@ -2,7 +2,7 @@ asm_object = start16.o start32.o start64.o
 c_object = main.o
 h_object = config.h
 linker = linker.lds.S
-cc_flags = -O0 -g -no-pie -nostartfiles -nodefaultlibs -nolibc -nostdlib -nostdlib++
+cc_flags = -O0 -g -no-pie -fno-pic -mcmodel=kernel -nostartfiles -nodefaultlibs -nolibc -nostdlib -nostdlib++
 
 binary: $(asm_object) $(c_object) $(linker)
 	gcc -E -P -x c $(linker) > $(linker).out
