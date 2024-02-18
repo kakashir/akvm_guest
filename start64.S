@@ -21,14 +21,27 @@ idt_intr_entry_point_size:
 .section ".bss","aw", @nobits
 
 .balign 8
+.fill 4096, 1, 0
+stack_top_64:
+
+.balign 1
+
+.balign 8
 .section ".text64","ax"
 .code64
 
 .global start64
 start64:
 1:
-	lea start_kernel(%rip), %rcx
-	call *%rcx
+	mov %ss, %rax
+	push %rax
+	pushq $stack_top_64
+	pushfq
+	mov %cs, %rcx
+	push %rcx
+	lea start_kernel(%rip), %rdx
+	push %rdx
+	iretq
 
 .macro DEFINE_EXCEP_HANDLER error_code vector asm_func_name
 .global \asm_func_name
