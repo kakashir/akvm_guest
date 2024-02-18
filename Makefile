@@ -1,6 +1,6 @@
 asm_object = start16.o start32.o start64.o
-c_object = main.o
-h_object = config.h
+c_object = main.o x86.o
+h_object = config.h x86.h vm_service.h types.h entry.h
 linker = linker.lds.S
 flags = -O0 -g -no-pie -fno-pic -mcmodel=kernel -nostartfiles \
 -nodefaultlibs -nolibc -nostdlib -nostdlib++ -fno-stack-protector \
