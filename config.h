@@ -10,6 +10,7 @@
 
 #define KERNEL_OUTPUT_FORMAT "elf64-x86-64"
 
-#define KERNEL_CS_64  0x18
+#define KERNEL_DS_64  0x8
+#define KERNEL_CS_64  0x10
 
 #endif

@@ -1,3 +1,5 @@
+#include "config.h"
+
 .balign 4096
 .section ".text64_low","ax"
 .code64
@@ -155,5 +157,32 @@ load_idt:
 	push %rbp
 	mov %rsp, %rbp
 	lidt (%rdi)
+	pop %rbp
+	ret
+
+.global load_gdt
+load_gdt:
+	push %rbp
+	mov %rsp, %rbp
+	lgdt (%rdi)
+	pop %rbp
+	ret
+
+.global flush_segment_cache
+flush_segment_cache:
+	push %rbp
+	mov %rsp, %rbp
+
+	mov $KERNEL_DS_64, %eax
+	mov %eax, %ds
+	mov %eax, %es
+	mov %eax, %ss
+	mov %eax, %fs
+	mov %eax, %gs
+
+	push $KERNEL_CS_64
+	pushq $1f
+	retfq
+1:
 	pop %rbp
 	ret

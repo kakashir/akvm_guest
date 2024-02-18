@@ -3,6 +3,27 @@
 #include "x86.h"
 #include "vm_service.h"
 
+/* 1 null (8byte)/ 1 code(8bytes)/1 data(8bytes)/1 64bit TSS(16 bytes)*/
+static struct gdt_entry gdt[5];
+
+#define GDT_ENTRY(_type, _offset, _l, _db) (struct gdt_entry) {	\
+	.seg_limit0_15 = 0xffff,				\
+	.offset0_15 = _offset & 0xffff,		\
+	.offset16_23 = (_offset >> 16) &0xff,	\
+	.type = _type, \
+	.s = 1,	  \
+	.dpl = 0, \
+	.p = 1, \
+	.seg_limit16_19 = 0xf, \
+	.avl = 0, \
+	.l = _l, \
+	.db = _db, \
+	.g = 1, \
+	.offset24_31 = (_offset >> 24) & 0xffff \
+}
+
+#define GDT_ENTRY_64(_type) GDT_ENTRY(_type, 0x0, 1, 0)
+
 #define IDT_ENTRY_TYPE(_addr, _type) (struct idt64_entry) {    \
 	.selector = KERNEL_CS_64,   \
 	.p = 1,	     \
@@ -61,4 +82,19 @@ void x86_excep_intr_common_handler(struct inter_excep_regs *regs)
 {
 	vm_service(VM_SERVICE_PANIC, 0xbadULL,
 		   regs->vector, regs->rip, 0, 0);
+}
+
+void setup_gdt(void)
+{
+	struct gdt64_desc desc = {
+		.size = sizeof(gdt),
+		.base = (unsigned long)gdt,
+	};
+
+	gdt[0] = (struct gdt_entry) { 0 };
+	gdt[1] = GDT_ENTRY_64(GDT_TYPE_DATA);
+	gdt[2] = GDT_ENTRY_64(GDT_TYPE_CODE);
+
+	load_gdt(&desc);
+	flush_segment_cache();
 }

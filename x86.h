@@ -27,6 +27,9 @@
 #define INTR_VECTOR_BEGIN 32
 #define MAX_VECTOR_NUMBER 256
 
+#define GDT_TYPE_DATA 0x2
+#define GDT_TYPE_CODE 0xa
+
 #ifndef __ASM__
 #include "types.h"
 
@@ -74,7 +77,35 @@ struct idt64_desc {
 	unsigned long base;
 } __attribute__((packed));
 
+struct gdt_entry {
+	unsigned int seg_limit0_15:16;
+	unsigned int offset0_15:16;
+	unsigned int offset16_23:8;
+	unsigned int type:4;
+	unsigned int s:1;
+	unsigned int dpl:2;
+	unsigned int p:1;
+	unsigned int seg_limit16_19:4;
+	unsigned int avl:1;
+	unsigned int l:1;
+	unsigned int db:1;
+	unsigned int g:1;
+	unsigned int offset24_31:8;
+} __attribute__((packed));
+
+struct gdt64_entry {
+	struct gdt_entry entry;
+	unsigned int offset32_63;
+	unsigned int reserved;
+} __attribute__((packed));
+
+struct gdt64_desc {
+	unsigned short int size;
+	unsigned long base;
+} __attribute__((packed));
+
 void setup_idt_table(void);
+void setup_gdt(void);
 
 #endif
 #endif

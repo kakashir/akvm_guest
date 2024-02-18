@@ -33,4 +33,8 @@ long vm_service(unsigned long id, unsigned long arg0,
 struct idt64_desc;
 void load_idt(struct idt64_desc *desc);
 
+struct gdt64_desc;
+void load_gdt(struct gdt64_desc *desc);
+void flush_segment_cache(void);
+
 #endif
