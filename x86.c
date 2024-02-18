@@ -80,8 +80,15 @@ void setup_idt_table(void)
 
 void x86_excep_intr_common_handler(struct inter_excep_regs *regs)
 {
-	vm_service(VM_SERVICE_PANIC, 0xbadULL,
-		   regs->vector, regs->rip, 0, 0);
+	struct vm_service_arg arg = {
+		.type = VM_SERVICE_DEBUG,
+		.arg0 = 0xbadULL,
+		.arg1 = regs->vector,
+		.arg2 = regs->rip,
+		.arg3 = regs->rsp,
+		.arg4 = (unsigned long)regs,
+	};
+	vm_service(&arg);
 }
 
 void setup_gdt(void)

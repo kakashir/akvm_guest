@@ -153,15 +153,26 @@ DEFINE_INTR_HANDLER 234, 255
 vm_service:
 	push %rbp
 	mov %rsp, %rbp
+	push %rbx
 
-	mov %rdi, %rax
-	mov %rsi, %rdi
-	mov %rdx, %rsi
-	mov %rcx, %rdx
-	mov %r8, %rcx
-	mov %r9, %r8
+	mov %rdi, %rbx
+	mov 0*8(%rbx), %rax
+	mov 1*8(%rbx), %rdi
+	mov 2*8(%rbx), %rsi
+	mov 3*8(%rbx), %rdx
+	mov 4*8(%rbx), %rcx
+	mov 5*8(%rbx), %r8
+	mov 6*8(%rbx), %r9
 	vmcall
+	mov %rax, 0*8(%rbx)
+	mov %rdi, 1*8(%rbx)
+	mov %rsi, 2*8(%rbx)
+	mov %rdx, 3*8(%rbx)
+	mov %rcx, 4*8(%rbx)
+	mov %r8,  5*8(%rbx)
+	mov %r9,  6*8(%rbx)
 
+	pop %rbx
 	pop %rbp
 	ret
 

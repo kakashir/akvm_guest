@@ -26,9 +26,8 @@ void asm_excep_19(void);
 void asm_excep_20(void);
 void asm_excep_21(void);
 
-long vm_service(unsigned long id, unsigned long arg0,
-		unsigned long arg1, unsigned long arg2,
-		unsigned long arg3, unsigned long arg4);
+struct vm_service_arg;
+void vm_service(struct vm_service_arg *arg);
 
 struct idt64_desc;
 void load_idt(struct idt64_desc *desc);
