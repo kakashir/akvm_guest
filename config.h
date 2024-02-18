@@ -12,5 +12,10 @@
 
 #define KERNEL_DS_64  0x8
 #define KERNEL_CS_64  0x10
+#define KERNEL_TSS_64 0x18
+
+#define EXCEP_2_IST   1
+#define EXCEP_8_IST   2
+#define EXCEP_18_IST  3
 
 #endif

@@ -6,35 +6,41 @@
 /* 1 null (8byte)/ 1 code(8bytes)/1 data(8bytes)/1 64bit TSS(16 bytes)*/
 static struct gdt_entry gdt[5];
 
-#define GDT_ENTRY(_type, _offset, _l, _db) (struct gdt_entry) {	\
-	.seg_limit0_15 = 0xffff,				\
-	.offset0_15 = _offset & 0xffff,		\
-	.offset16_23 = (_offset >> 16) &0xff,	\
+#define GDT_ENTRY(_type, _offset, _limit, _s, _l, _db) (struct gdt_entry) { \
+	.seg_limit0_15 = (_limit) & 0xffff,			\
+	.offset0_15 = (_offset) & 0xffff,		\
+	.offset16_23 = ((_offset) >> 16) &0xff,	\
 	.type = _type, \
-	.s = 1,	  \
+	.s = _s,	  \
 	.dpl = 0, \
 	.p = 1, \
-	.seg_limit16_19 = 0xf, \
+	.seg_limit16_19 = ((_limit) >> 16) & 0xf,	\
 	.avl = 0, \
 	.l = _l, \
 	.db = _db, \
 	.g = 1, \
-	.offset24_31 = (_offset >> 24) & 0xffff \
+	.offset24_31 = ((_offset) >> 24) & 0xffff	\
 }
 
-#define GDT_ENTRY_64(_type) GDT_ENTRY(_type, 0x0, 1, 0)
+#define GDT_ENTRY_64(_type) GDT_ENTRY(_type, 0x0, 0xfffff, 1, 1, 0)
+#define GDT_TSS_64(type, offset, limit) (struct gdt64_entry)	{	\
+		.entry = GDT_ENTRY(type, offset, limit, 0, 0, 0), \
+		.offset32_63 = ((offset) >> 32) & 0xffffffff, \
+		.reserved = 0, \
+	}
 
-#define IDT_ENTRY_TYPE(_addr, _type) (struct idt64_entry) {    \
+#define IDT_ENTRY_TYPE(_addr, _type, _ist) (struct idt64_entry) {    \
 	.selector = KERNEL_CS_64,   \
 	.p = 1,	     \
 	.type = _type,  \
+	.ist = _ist,	      \
 	.offset0_15 = _addr & 0xffff, \
 	.offset16_31 = (_addr >> 16) & 0xfffff,	\
 	.offset32_63 = (_addr >> 32) & 0xffffffff, \
 }
 
-#define IDT_ENTRY_TRAP(addr) IDT_ENTRY_TYPE(addr, IDT_TYPE_TRAP)
-#define IDT_ENTRY_INTR(addr) IDT_ENTRY_TYPE(addr, IDT_TYPE_INTR)
+#define IDT_ENTRY_TRAP(addr, ist) IDT_ENTRY_TYPE(addr, IDT_TYPE_TRAP, ist)
+#define IDT_ENTRY_INTR(addr, ist) IDT_ENTRY_TYPE(addr, IDT_TYPE_INTR, ist)
 
 static struct idt64_entry idt[256];
 
@@ -44,8 +50,9 @@ void setup_idt_table(void)
 		.size = sizeof(idt),
 		.base = (unsigned long)idt,
 	};
+
 #undef ____SET_IDT
-#define ____SET_IDT(x) idt[x] = IDT_ENTRY_TRAP((unsigned long)asm_excep_##x)
+#define ____SET_IDT(x) idt[x] = IDT_ENTRY_TRAP((unsigned long)asm_excep_##x, 0)
 	____SET_IDT(0);
 	____SET_IDT(1);
 	____SET_IDT(2);
@@ -73,15 +80,30 @@ void setup_idt_table(void)
 	for (int i = 0; i < MAX_VECTOR_NUMBER - INTR_VECTOR_BEGIN; ++i)
 		idt[i + INTR_VECTOR_BEGIN] =
 			IDT_ENTRY_INTR((unsigned long)__idt_intr_one_start +
-				       i * idt_intr_entry_point_size);
+				       i * idt_intr_entry_point_size, 0);
 
 	load_idt(&desc);
 }
 
+void setup_idt_table_ist(void)
+{
+#undef ____SET_IDT
+#define ____SET_IDT(x, ist) \
+	idt[x] = IDT_ENTRY_TRAP((unsigned long)asm_excep_##x, ist)
+
+	____SET_IDT(2, EXCEP_2_IST);
+	____SET_IDT(8, EXCEP_8_IST);
+	____SET_IDT(18, EXCEP_18_IST);
+
+#undef ____SET_IDT
+}
+
+
+
 void x86_excep_intr_common_handler(struct inter_excep_regs *regs)
 {
 	struct vm_service_arg arg = {
-		.type = VM_SERVICE_DEBUG,
+		.type = VM_SERVICE_PANIC,
 		.arg0 = 0xbadULL,
 		.arg1 = regs->vector,
 		.arg2 = regs->rip,
@@ -99,9 +121,32 @@ void setup_gdt(void)
 	};
 
 	gdt[0] = (struct gdt_entry) { 0 };
-	gdt[1] = GDT_ENTRY_64(GDT_TYPE_DATA);
-	gdt[2] = GDT_ENTRY_64(GDT_TYPE_CODE);
+	gdt[sel_to_index(KERNEL_DS_64)] = GDT_ENTRY_64(GDT_TYPE_DATA);
+	gdt[sel_to_index(KERNEL_CS_64)] = GDT_ENTRY_64(GDT_TYPE_CODE);
 
 	load_gdt(&desc);
 	flush_segment_cache();
+}
+
+static struct tss64_segment tss;
+
+void setup_tss(void)
+{
+	struct gdt64_entry *p;
+	unsigned long ist_stack_top = (unsigned long)&ist_stack_top_64;
+
+	tss.io_map_base = offset_of(struct tss64_segment, io_map);
+	tss.io_map = 0xff;
+	tss.io_map_end = 0xff;
+	tss.rsp[0] = (unsigned long)&stack_top_64;
+	/* rsp1/rsp2 keep 0x0 as guard */
+	for (int i = 6; i >= 0; --i) {
+		tss.ist[i] = ist_stack_top;
+		ist_stack_top -= 4096;
+	}
+
+	p = (struct gdt64_entry *)(gdt + sel_to_index(KERNEL_TSS_64));
+	*p = GDT_TSS_64(GDT_TYPE_TSS,
+			(unsigned long)&tss, sizeof(tss));
+	load_tss(KERNEL_TSS_64);
 }

@@ -29,6 +29,7 @@
 
 #define GDT_TYPE_DATA 0x2
 #define GDT_TYPE_CODE 0xa
+#define GDT_TYPE_TSS 0x9
 
 #ifndef __ASM__
 #include "types.h"
@@ -104,8 +105,25 @@ struct gdt64_desc {
 	unsigned long base;
 } __attribute__((packed));
 
+struct tss64_segment {
+	u32 reserved;
+	u64 rsp[3];
+	u32 reserved1[2];
+	u64 ist[7];
+	u32 reserved2[2];
+	u16 reserved3;
+	u16 io_map_base;
+	u8 intr_redir_map[32];
+	u8 io_map;
+	u8 io_map_end;
+} __attribute__((packed));
+
 void setup_idt_table(void);
 void setup_gdt(void);
+void setup_tss(void);
+void setup_idt_table_ist(void);
+
+#define sel_to_index(x) ((x) >> 3)
 
 #endif
 #endif

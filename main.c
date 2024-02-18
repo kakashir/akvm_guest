@@ -6,7 +6,11 @@ int start_kernel(void)
 {
 	setup_idt_table();
 	setup_gdt();
+	setup_tss();
+	setup_idt_table_ist();
 
-	while(1);
+	while(1) {
+		asm volatile("int $0x40");
+	}
 	return 1;
 }

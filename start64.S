@@ -22,7 +22,12 @@ idt_intr_entry_point_size:
 
 .balign 8
 .fill 4096, 1, 0
+.global stack_top_64
 stack_top_64:
+
+.fill 4096, 7, 0
+.global ist_stack_top_64
+ist_stack_top_64:
 
 .balign 1
 
@@ -189,6 +194,14 @@ load_gdt:
 	push %rbp
 	mov %rsp, %rbp
 	lgdt (%rdi)
+	pop %rbp
+	ret
+
+.global load_tss
+load_tss:
+	push %rbp
+	mov %rsp, %rbp
+	ltr %rdi
 	pop %rbp
 	ret
 

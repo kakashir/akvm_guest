@@ -36,4 +36,9 @@ struct gdt64_desc;
 void load_gdt(struct gdt64_desc *desc);
 void flush_segment_cache(void);
 
+extern void* ist_stack_top_64;
+extern void* stack_top_64;
+
+void load_tss(unsigned long selector);
+
 #endif
