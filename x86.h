@@ -122,6 +122,10 @@ void setup_idt_table(void);
 void setup_gdt(void);
 void setup_tss(void);
 void setup_idt_table_ist(void);
+unsigned long read_dr(int index);
+void write_dr(int index, unsigned long val);
+unsigned long read_cr(int cr);
+void write_cr(int cr, unsigned long val);
 
 #define sel_to_index(x) ((x) >> 3)
 
