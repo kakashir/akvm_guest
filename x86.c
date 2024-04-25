@@ -103,12 +103,12 @@ void setup_idt_table_ist(void)
 void x86_excep_intr_common_handler(struct inter_excep_regs *regs)
 {
 	struct vm_service_arg arg = {
-		.type = VM_SERVICE_PANIC,
-		.arg0 = 0xbadULL,
-		.arg1 = regs->vector,
-		.arg2 = regs->rip,
-		.arg3 = regs->rsp,
-		.arg4 = (unsigned long)regs,
+		.type = VM_SERVICE_DEBUG,
+		.raw.arg0 = 0xbadULL,
+		.raw.arg1 = regs->vector,
+		.raw.arg2 = regs->rip,
+		.raw.arg3 = regs->rsp,
+		.raw.arg4 = (unsigned long)regs,
 	};
 	vm_service(&arg);
 }
