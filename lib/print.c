@@ -14,6 +14,72 @@ static bool vprint_buf_free(struct vprint_context *c)
 	return c->buf < c->buf_end;
 }
 
+static void __swap_byte(u8* buf, int size)
+{
+	int e = size / 2;
+	int t;
+
+	for (int i = 0; i < e; ++i) {
+		t = buf[i];
+		buf[i] = buf[size - i - 1];
+		buf[size - i - 1] = t;
+	}
+}
+
+static void __dec2a(int d, u8 *buf)
+{
+	if (d >= 0 && d <= 9)
+		*buf = '0' + d;
+	else
+		*buf = '?';
+}
+
+#define __dec2str(c, d, e)			\
+	do {					\
+		(e) = (d) - ((d) / 10) * 10;	\
+		__dec2a(e, (c)->buf++);		\
+		(d) /= 10;			\
+	} while((d) && vprint_buf_free(c));	\
+
+static void __dec2str_signed(struct vprint_context *c, s64 d)
+{
+	int e;
+	u8 *old;
+
+	if (d < 0) {
+		*c->buf++ = '-';
+		if (!vprint_buf_free(c))
+			return;
+		d = 0 - d;
+	}
+
+	old = c->buf;
+	__dec2str(c, d, e);
+	__swap_byte(old, c->buf - old);
+}
+
+static void __dec2str_unsigned(struct vprint_context *c, u64 d)
+{
+	int e;
+	u8 *old;
+
+	old = c->buf;
+	__dec2str(c, d, e);
+	__swap_byte(old, c->buf - old);
+}
+
+static void __vprint_d(struct vprint_context *c, va_list arg, bool sign)
+{
+	if (!c->long_extend) {
+		sign ? __dec2str_signed(c, va_arg(arg, int)) :
+			__dec2str_unsigned(c, va_arg(arg, unsigned int));
+		return;
+	}
+
+	sign ? __dec2str_signed(c, va_arg(arg, long)) :
+		__dec2str_unsigned(c, va_arg(arg, unsigned long));
+}
+
 static void __vprint_s(struct vprint_context *c, va_list arg)
 {
 	const char *p = va_arg(arg, const char*);
@@ -46,6 +112,17 @@ int vsnprint(u8 *_buf, int _size, const char *_format, va_list _arg)
 				case 's':
 					__vprint_s(&c, _arg);
 					c.long_extend = 0;
+					break;
+				case 'd':
+					__vprint_d(&c, _arg, true);
+					c.long_extend = 0;
+					break;
+				case 'u':
+					__vprint_d(&c, _arg, false);
+					c.long_extend = 0;
+					break;
+				case 'l':
+					++c.long_extend;
 					break;
 				case '%':
 					*c.buf++ = *c.format;
