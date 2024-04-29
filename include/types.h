@@ -11,6 +11,9 @@ typedef int s32;
 typedef short int s16;
 typedef char s8;
 
+typedef u8 bool;
+#define true 1
+#define false 0
 
 #define offset_of(c, o) \
 	((unsigned long)(&(((typeof(c) *)0)->o)))
