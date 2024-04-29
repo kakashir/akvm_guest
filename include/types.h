@@ -11,6 +11,7 @@ typedef int s32;
 typedef short int s16;
 typedef char s8;
 
+
 #define offset_of(c, o) \
 	((unsigned long)(&(((typeof(c) *)0)->o)))
 

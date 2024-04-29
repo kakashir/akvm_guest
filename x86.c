@@ -1,7 +1,7 @@
-#include "config.h"
-#include "entry.h"
-#include "x86.h"
-#include "vm_service.h"
+#include <config.h>
+#include <entry.h>
+#include <x86.h>
+#include <vm_service.h>
 
 /* 1 null (8byte)/ 1 code(8bytes)/1 data(8bytes)/1 64bit TSS(16 bytes)*/
 static struct gdt_entry gdt[5];

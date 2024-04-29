@@ -1,4 +1,4 @@
-#include "x86.h"
+#include <x86.h>
 #include "config.h"
 
 .balign	4096

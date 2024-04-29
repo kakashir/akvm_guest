@@ -1,6 +1,7 @@
-#include "types.h"
-#include "x86.h"
-#include "entry.h"
+#include <types.h>
+#include <compiler.h>
+#include <x86.h>
+#include <entry.h>
 
 int start_kernel(void)
 {
