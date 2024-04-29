@@ -18,4 +18,19 @@
 #define EXCEP_8_IST   2
 #define EXCEP_18_IST  3
 
+/* nromal config start */
+
+/*
+  take care stack overflow when enlarge this,
+  the kernel stack is small, i.e only 4K allocated.
+ */
+#define CONFIG_PRINT_BUF_SIZE 256
+
+/* nromal config end */
+
+/* platform fixed device start */
+
+#define SERIAL_PORT_OUT 0xe0001
+
+/* platform fixed device end */
 #endif
