@@ -88,6 +88,36 @@ static void __vprint_s(struct vprint_context *c, va_list arg)
 		*c->buf++ = *p++;
 }
 
+static void __hex2a(int d, u8 *buf)
+{
+	if (0x0 <= d && d <= 0x9)
+		*buf = '0' + d;
+	else if (0xa <= d && d <= 0xf)
+		*buf = 'a' + (d - 0xa);
+	else
+		*buf = '?';
+}
+
+static void __vprint_x(struct vprint_context *c, va_list arg)
+{
+	u64 v;
+	unsigned int i;
+	u8 *old = c->buf;
+
+	if (!c->long_extend)
+		v = va_arg(arg, unsigned int);
+	else
+		v = va_arg(arg, unsigned long);
+
+	do {
+		i = v & 0xf;
+		v >>= 4;
+		__hex2a(i, c->buf++);
+	} while (v && vprint_buf_free(c));
+
+	__swap_byte(old, c->buf - old);
+}
+
 int vsnprint(u8 *_buf, int _size, const char *_format, va_list _arg)
 {
 	struct vprint_context c;
@@ -119,6 +149,10 @@ int vsnprint(u8 *_buf, int _size, const char *_format, va_list _arg)
 					break;
 				case 'u':
 					__vprint_d(&c, _arg, false);
+					c.long_extend = 0;
+					break;
+				case 'x':
+					__vprint_x(&c, _arg);
 					c.long_extend = 0;
 					break;
 				case 'l':
