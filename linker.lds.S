@@ -41,7 +41,6 @@ SECTIONS
 	__kernel_32_end = .;
 
 	__kernel_64_start = .;
-
 	__kernel_64_low_start = .;
 
 	.text64_low : ALIGN(4096) {
@@ -49,6 +48,7 @@ SECTIONS
 	}
 
 	__kernel_64_low_end = .;
+	__kernel_64_high_start = .;
 
 	. = KERNEL_64_LOAD_VA_ADDR + __kernel_64_low_end;
 	.data64 : AT(ALIGN(__kernel_64_low_end, 4096)) ALIGN(4096) {
@@ -72,8 +72,8 @@ SECTIONS
 		__text64_end = .;
 	}
 
+	__kernel_64_high_end = . - KERNEL_64_LOAD_VA_ADDR;
 	__kernel_64_end = .;
-
 	__kernel_size__ = (__kernel_16_end - __kernel_16_start) +
 					  (__kernel_32_end - __kernel_32_start) +
 					  (__kernel_64_end - __kernel_64_start);
