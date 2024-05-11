@@ -21,6 +21,7 @@
 
 #define X86_PAGE_SIZE_1G 0x40000000
 #define X86_PAGE_SIZE_4M 0x400000
+#define X86_PAGE_SIZE 0x1000
 
 #define IDT_TYPE_TRAP 0xf
 #define IDT_TYPE_INTR 0xe

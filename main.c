@@ -2,6 +2,9 @@
 #include <compiler.h>
 #include <x86.h>
 #include <entry.h>
+#include <io.h>
+#include "lib/print.h"
+#include "mm/mm.h"
 
 int start_kernel(void)
 {
@@ -10,8 +13,8 @@ int start_kernel(void)
 	setup_tss();
 	setup_idt_table_ist();
 
-	while(1) {
-		asm volatile("int $0x40");
-	}
+	mm_early_init();
+
+	while(1) {;}
 	return 1;
 }

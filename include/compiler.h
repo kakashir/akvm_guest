@@ -9,4 +9,6 @@ typedef __builtin_va_list va_list;
 #define va_copy(d, s)	__builtin_va_copy(d, s)
 
 #define MIN(a, b) ((a) <= (b) ? (a) : (b))
+#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+
 #endif
