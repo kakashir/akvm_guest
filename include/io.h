@@ -5,5 +5,6 @@
 #include <entry.h>
 
 void mmio_write(u64 addr, u64 size, u64 value);
+u64 mmio_read64(u64 addr);
 
 #endif
