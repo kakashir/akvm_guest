@@ -1,6 +1,6 @@
 SUB_DIR = $(shell pwd)
 ROOT_DIR= $(SUB_DIR)/..
-c_object = debug.o print.o
+c_object = debug.o print.o bitops.o
 h_object = *.h
 
 BUILD: $(c_object)

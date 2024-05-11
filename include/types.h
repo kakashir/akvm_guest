@@ -17,5 +17,6 @@ typedef u8 bool;
 
 #define offset_of(c, o) \
 	((unsigned long)(&(((typeof(c) *)0)->o)))
-
+#define ALIGN(i, n) ((i) & ~((n) - 1))
+#define ALIGN_DOWN(i, n) ALIGN((i) + (n), n)
 #endif
