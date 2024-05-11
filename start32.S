@@ -12,8 +12,15 @@ lv_4_page_table:
 lv_5_page_table:
 	.fill 4096, 1, 0
 
-/* each idt itme has 8 bytes by 256 entries = 2048 KB */
+
 .balign 8
+
+/* point to in using lv4 or lv5 early paget table root */
+.global early_page_table_root
+early_page_table_root:
+	.8byte 0x0
+
+/* each idt itme has 8 bytes by 256 entries = 2048 KB */
 idt32:
 	.rept 32
 	.4byte 0x00080000
@@ -116,6 +123,7 @@ start32:
 	wrmsr
 
 	lea lv_4_page_table, %eax
+	mov %eax, early_page_table_root
 	mov %eax, %cr3
 
 	/* enable ia32-e mode */
