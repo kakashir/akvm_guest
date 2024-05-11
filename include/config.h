@@ -32,5 +32,17 @@
 
 #define SERIAL_PORT_OUT 0xe0001
 
+#define HWCFG_REG_TYPE 0xe0010
+	#define HWCFG_MEMORY_INFO (1ULL)
+#define HWCFG_REG_CTL 0xe0011
+	#define HWCFG_CTL_NEXT_ITEM (1ULL)
+#define HWCFG_REG_DATA_0 0xe0012
+#define HWCFG_REG_DATA_1 0xe0013
+#define HWCFG_REG_DATA_2 0xe0014
+#define HWCFG_REG_DATA_3 0xe0015
+
+#define HWCFG_MEMORY_TYPE_PHYSICAL (1ULL)
+
+
 /* platform fixed device end */
 #endif
