@@ -5,8 +5,8 @@
 #define KERNEL_SECTION_ITEM(s, e) \
 	{						\
 		(u64)&s, (u64)&e,			\
-		KERNEL_64_LOAD_VA_ADDR + (u64)&s,	\
-		KERNEL_64_LOAD_VA_ADDR + (u64)&e,	\
+		KERNEL_LOAD_VA_ADDR + (u64)&s,	\
+		KERNEL_LOAD_VA_ADDR + (u64)&e,	\
 	}
 
 struct kernel_section kernel_section[4] = {
