@@ -40,10 +40,9 @@ SECTIONS
 
 	__kernel_32_end = .;
 
-	__kernel_64_start = .;
-	__kernel_64_low_start = .;
-
 	.text64_low : ALIGN(4096) {
+		__kernel_64_start = .;
+		__kernel_64_low_start = .;
 		start64.o(.text64_low)
 	}
 
