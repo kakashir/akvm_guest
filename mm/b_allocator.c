@@ -6,6 +6,7 @@
 #include "b_allocator.h"
 #include "lib/print.h"
 #include "lib/bitops.h"
+#include "lib/linker.h"
 
 #define PAGE_FREE 1
 #define PAGE_USED 0
@@ -63,22 +64,14 @@ static void mark_available_memory_range_free_used(u64 upper_limit,
 
 static void mark_kernel_range_used(u64 *used)
 {
-	struct {
-		u64 s;
-		u64 e;
-	} m[] = {
-		{ (u64)&__kernel_16_start, (u64)&__kernel_16_end },
-		{ (u64)&__kernel_32_start, (u64)&__kernel_32_end },
-		{ (u64)&__kernel_64_low_start, (u64)&__kernel_64_low_end },
-		{ (u64)&__kernel_64_high_start, (u64)&__kernel_64_high_end },
-	};
 	u64 size;
-	u64 b_start;
 	u64 b_end;
+	u64 b_start;
+	struct kernel_section *ks;
 
-	for (int i = 0; i < ARRAY_SIZE(m); ++i) {
-		b_start = pa_to_pfn(m[i].s);
-		b_end = pa_to_pfn(m[i].e + PAGE_SIZE - 1);
+	for_each_kernel_section(ks) {
+		b_start = pa_to_pfn(ks->pa_start);
+		b_end = pa_to_pfn(ks->pa_end + PAGE_SIZE - 1);
 		size = b_end - b_start;
 
 		bit_clear(b_bitmap, b_start, size);

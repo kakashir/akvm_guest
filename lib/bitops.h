@@ -6,11 +6,6 @@
 
 #define BITS_PER_U64 (sizeof(u64) * 8)
 
-static inline u64 bitmask64(int low, int high)
-{
-	return (high < 63 ? ((1ULL << (high + 1)) - 1) : -1LL) &
-		~((1ULL << low) - 1);
-}
 #define BITS_ULL(l, h) \
 	(((h) < 63 ? ((1ULL << ((h) + 1)) - 1) : -1LL) &	\
 	 ~((1ULL << (l)) - 1))
