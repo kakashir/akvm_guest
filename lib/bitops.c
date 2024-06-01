@@ -1,4 +1,4 @@
-#include "bitops.h"
+#include <lib/bitops.h>
 
 static void bit_op(void *bitmap, bool set, u64 index, u64 size)
 {

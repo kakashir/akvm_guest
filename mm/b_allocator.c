@@ -3,9 +3,9 @@
 #include <ld.h>
 #include <io.h>
 #include <x86.h>
+#include <lib/bitops.h>
 #include "b_allocator.h"
 #include "lib/print.h"
-#include "lib/bitops.h"
 #include "lib/linker.h"
 
 #define PAGE_FREE 1

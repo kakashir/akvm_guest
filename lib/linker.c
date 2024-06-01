@@ -1,4 +1,4 @@
-#include "linker.h"
+#include <lib/linker.h>
 #include "ld.h"
 #include "config.h"
 

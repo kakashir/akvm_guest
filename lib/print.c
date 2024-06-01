@@ -1,6 +1,6 @@
 #include <config.h>
 #include <io.h>
-#include "print.h"
+#include <lib/print.h>
 
 struct vprint_context {
 	u8 *buf;
