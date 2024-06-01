@@ -172,7 +172,7 @@ setup_tmp_long_mode_page_table:
 	lea lv_3_page_table, %edi
 	mov $0x183, %eax
 	mov $KERNEL_SIZE, %ebx
-	mov $((KERNEL_LOAD_VA_ADDR >> (2 * 9 + 12)) & 0x1ff), %ecx
+	mov $(X86_VA_PAGE_LEVEL_INDEX(KERNEL_LOAD_VA_ADDR, 3)), %ecx
 1:
 	mov %eax, (%edi, %ecx, 8)
 	add $X86_PAGE_SIZE_1G, %eax
@@ -185,14 +185,14 @@ setup_tmp_long_mode_page_table:
 	mov $lv_3_page_table + 0x003, %ecx
 	lea lv_4_page_table, %esi
 	mov %ecx, (%esi)
-	mov $((KERNEL_LOAD_VA_ADDR >> (3 * 9 + 12)) & 0x1ff), %eax
+	mov $(X86_VA_PAGE_LEVEL_INDEX(KERNEL_LOAD_VA_ADDR, 4)), %eax
 	mov %ecx, (%esi, %eax, 8)
 
 	/* 2 entries in level 5 for 1:1 and KERNEL_LOAD_VA_ADDR mapping */
 	mov $lv_4_page_table + 0x003, %ecx
 	lea lv_5_page_table, %esi
 	mov %ecx, (%esi)
-	mov $((KERNEL_LOAD_VA_ADDR >> (4 * 9 + 12)) & 0x1ff), %eax
+	mov $(X86_VA_PAGE_LEVEL_INDEX(KERNEL_LOAD_VA_ADDR, 5)), %eax
 	mov %ecx, (%esi, %eax, 8)
 
 	pop %ebp
