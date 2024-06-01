@@ -26,40 +26,29 @@ void __dump_bitmap(void)
 static void mark_available_memory_range_free_used(u64 upper_limit,
 						  u64 *free, u64 *used)
 {
+	const struct phy_mem_range *i;
 	u64 b_start;
 	u64 b_end;
 	u64 p_addr;
 	u64 size;
-	u64 type;
 
-	mmio_write(HWCFG_REG_TYPE, 8, HWCFG_MEMORY_INFO);
-	do {
-		p_addr = mmio_read64(HWCFG_REG_DATA_0);
-		size = mmio_read64(HWCFG_REG_DATA_1);
-		type = mmio_read64(HWCFG_REG_DATA_2);
+	for_each_phy_mem_range(i) {
+		if (i->addr >= upper_limit)
+			continue;
 
-		if (!size)
-			break;
-
-		if (p_addr >= upper_limit)
-			break;
-
-		size = MIN(size, upper_limit - p_addr);
-
-		b_start = pa_to_pfn(p_addr);
-		b_end = pa_to_pfn(p_addr + size + PAGE_SIZE - 1);
+		size = MIN(i->size, upper_limit - i->addr);
+		b_start = pa_to_pfn(i->addr);
+		b_end = pa_to_pfn(i->addr + size + PAGE_SIZE - 1);
 		size = b_end - b_start;
 
-		if (type == HWCFG_MEMORY_TYPE_PHYSICAL) {
+		if (i->type == HWCFG_MEMORY_TYPE_PHYSICAL) {
 			bit_set(b_bitmap, b_start, size);
 			*free += size;
 		} else {
 			bit_clear(b_bitmap, b_start, size);
 			*used += size;
 		}
-
-		mmio_write(HWCFG_REG_CTL, 8, HWCFG_CTL_NEXT_ITEM);
-	} while(size);
+	}
 }
 
 static void mark_kernel_range_used(u64 *used)

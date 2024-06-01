@@ -25,6 +25,7 @@
   the kernel stack is small, i.e only 4K allocated.
  */
 #define CONFIG_PRINT_BUF_SIZE 256
+#define MAX_NR_PHY_MEM_RANGE 32
 
 /* nromal config end */
 
