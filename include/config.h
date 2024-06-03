@@ -4,9 +4,19 @@
 #define KERNEL_16_LOAD_PHY_ADDR  0x0
 #define KERNEL_32_LOAD_PHY_ADDR  0x100000
 
+#define VA_LAYOUT_USER_BEGIN 0x0ULL
+#define VA_LAYOUT_USER_END   0x800000000000ULL
+
+#define VA_LAYOUT_KERNEL_BEGIN 0xffff800000000000ULL
+
+/* 32G memory is 1:1 mapped, so only 32G is supported */
+#define VA_LAYOUT_IDENTIFY_MAPPING_BEGIN 0xfffff00000000000
+#define VA_LAYOUT_IDENTIFY_MAPPING_END 0xfffff00200000000
+
 /*  Follow gcc's -mcmodel=kernel */
 #define KERNEL_LOAD_VA_ADDR   0xffffffff80000000
-#define KERNEL_SIZE  (0xffffffffffffffffULL - KERNEL_LOAD_VA_ADDR + 1)
+#define KERNEL_SIZE  (0x10000000ULL)
+#define VA_LAYOUT_KERNEL_END 0xffffffffffffffffULL
 
 #define KERNEL_OUTPUT_FORMAT "elf64-x86-64"
 

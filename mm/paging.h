@@ -57,4 +57,33 @@ typedef x86_pte_t pud_t;
 typedef x86_pte_t pmd_t;
 typedef x86_pte_t pt_t;
 
+#define va(p) ((typeof(p))(((u64)(p)) + (VA_LAYOUT_IDENTIFY_MAPPING_BEGIN)))
+#define pa(v) ((typeof(p))(((u64)(v)) - (VA_LAYOUT_IDENTIFY_MAPPING_BEGIN)))
+
+/*
+  the low 4G memory is mapped 1:1 in early page table, so
+  pa = va before identify memory mapping is done.
+*/
+static inline pt_t* pa_to_va_1_to_1(pt_t* pte)
+{
+	return pte;
+}
+
+/*
+  add va -> pa mapping, pte points to root page table,
+  allocate page table entires from below 4G top.
+  pa_to_va: how to get va for one pa for memory access,
+  for sharing code before/after identify mapping, use
+  'pa_to_va_1_to_1' before identify mapping is done.
+  if NULL then va() is used.
+ */
+s64 map_page(pt_t *pte, u64 va, u64 pa, u64 size, int level,
+	     pt_t* pa_to_va(pt_t*));
+
+/*
+  This ONLY works when identify mapping is DONE,
+  it's using va() to access page table entires!
+ */
+void dump_page_table(pg_root_t *pg_root, u64 addr);
+
 #endif
