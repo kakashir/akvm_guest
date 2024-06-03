@@ -6,8 +6,6 @@
 #include <config.h>
 #include <x86.h>
 
-#define PAGE_SIZE X86_PAGE_SIZE
-
 extern u64 early_page_table_root;
 int mm_early_init(void);
 

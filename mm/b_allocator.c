@@ -4,9 +4,10 @@
 #include <io.h>
 #include <x86.h>
 #include <lib/bitops.h>
+#include <lib/print.h>
+#include <lib/linker.h>
 #include "b_allocator.h"
-#include "lib/print.h"
-#include "lib/linker.h"
+#include "paging.h"
 
 #define PAGE_FREE 1
 #define PAGE_USED 0
