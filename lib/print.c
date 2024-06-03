@@ -1,6 +1,7 @@
 #include <config.h>
 #include <io.h>
 #include <lib/print.h>
+#include <lib/string.h>
 
 struct vprint_context {
 	u8 *buf;
@@ -14,30 +15,10 @@ static bool vprint_buf_free(struct vprint_context *c)
 	return c->buf < c->buf_end;
 }
 
-static void __swap_byte(u8* buf, int size)
-{
-	int e = size / 2;
-	int t;
-
-	for (int i = 0; i < e; ++i) {
-		t = buf[i];
-		buf[i] = buf[size - i - 1];
-		buf[size - i - 1] = t;
-	}
-}
-
-static void __dec2a(int d, u8 *buf)
-{
-	if (d >= 0 && d <= 9)
-		*buf = '0' + d;
-	else
-		*buf = '?';
-}
-
 #define __dec2str(c, d, e)			\
 	do {					\
 		(e) = (d) - ((d) / 10) * 10;	\
-		__dec2a(e, (c)->buf++);		\
+		dec2a(e, (c)->buf++);		\
 		(d) /= 10;			\
 	} while((d) && vprint_buf_free(c));	\
 
@@ -55,7 +36,7 @@ static void __dec2str_signed(struct vprint_context *c, s64 d)
 
 	old = c->buf;
 	__dec2str(c, d, e);
-	__swap_byte(old, c->buf - old);
+	swap_byte(old, c->buf - old);
 }
 
 static void __dec2str_unsigned(struct vprint_context *c, u64 d)
@@ -65,7 +46,7 @@ static void __dec2str_unsigned(struct vprint_context *c, u64 d)
 
 	old = c->buf;
 	__dec2str(c, d, e);
-	__swap_byte(old, c->buf - old);
+	swap_byte(old, c->buf - old);
 }
 
 static void __vprint_d(struct vprint_context *c, va_list arg, bool sign)
@@ -88,16 +69,6 @@ static void __vprint_s(struct vprint_context *c, va_list arg)
 		*c->buf++ = *p++;
 }
 
-static void __hex2a(int d, u8 *buf)
-{
-	if (0x0 <= d && d <= 0x9)
-		*buf = '0' + d;
-	else if (0xa <= d && d <= 0xf)
-		*buf = 'a' + (d - 0xa);
-	else
-		*buf = '?';
-}
-
 static void __vprint_x(struct vprint_context *c, va_list arg)
 {
 	u64 v;
@@ -112,10 +83,10 @@ static void __vprint_x(struct vprint_context *c, va_list arg)
 	do {
 		i = v & 0xf;
 		v >>= 4;
-		__hex2a(i, c->buf++);
+		hex2a(i, c->buf++);
 	} while (v && vprint_buf_free(c));
 
-	__swap_byte(old, c->buf - old);
+	swap_byte(old, c->buf - old);
 }
 
 int vsnprint(u8 *_buf, int _size, const char *_format, va_list _arg)
