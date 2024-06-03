@@ -31,8 +31,8 @@ bool b_allocator_get_pages(u64 *addr, int n);
 bool b_allocator_get_pages_top(u64 *addr, int n);
 void b_allocator_free_pages(u64 addr, int n);
 
-#define b_allocator_get_page(a) b_allocator_get_pages(a, 1)
-#define b_allocator_get_page_top(a) b_allocator_get_pages_top(a, 1)
+#define b_allocator_get_page(a) b_allocator_get_pages((u64*)a, 1)
+#define b_allocator_get_page_top(a) b_allocator_get_pages_top((u64*)a, 1)
 #define b_allocator_free_page(a) b_allocator_free_pages(b, 1)
 
 #endif
