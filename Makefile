@@ -15,6 +15,7 @@ cc = gcc
 flags = -O0 -g -no-pie -fno-pic -mcmodel=kernel -nostartfiles \
 -nodefaultlibs -nolibc -nostdlib -nostdlib++ -fno-stack-protector \
 -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx -mno-80387 -mno-fp-ret-in-387 \
+-Wno-builtin-declaration-mismatch \
 -I$(ROOT_DIR)/include
 
 
