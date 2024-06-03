@@ -10,5 +10,6 @@ typedef __builtin_va_list va_list;
 
 #define MIN(a, b) ((a) <= (b) ? (a) : (b))
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
+#define NULL ((void*)0)
 
 #endif

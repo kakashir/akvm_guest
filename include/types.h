@@ -19,6 +19,8 @@ typedef u8 bool;
 	((unsigned long)(&(((typeof(c) *)0)->o)))
 #define ALIGN(i, n) ((i) & ~((n) - 1))
 #define ALIGN_DOWN(i, n) ALIGN((i) + (n), n)
-#define KB(x) ((x)/1024)
+#define IS_ALIGN(i, n) (!(i & (n - 1)))
 
+#define KB(x) ((x)/1024)
+#define min(a, b) ((a) <= (b) ? (a) : (b))
 #endif
