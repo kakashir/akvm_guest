@@ -41,7 +41,9 @@ static void mark_available_memory_range_free_used(u64 upper_limit,
 		b_start = pa_to_pfn(i->addr);
 		b_end = pa_to_pfn(i->addr + size + PAGE_SIZE - 1);
 		size = b_end - b_start;
-
+		print("physical memory [0x%lx - 0x%lx] -> %s\n",
+		      pfn_to_pa(b_start), pfn_to_pa(b_end),
+		      i->type == HWCFG_MEMORY_TYPE_PHYSICAL ? "free" : "used");
 		if (i->type == HWCFG_MEMORY_TYPE_PHYSICAL) {
 			bit_set(b_bitmap, b_start, size);
 			*free += size;
@@ -63,7 +65,8 @@ static void mark_kernel_range_used(u64 *used)
 		b_start = pa_to_pfn(ks->pa_start);
 		b_end = pa_to_pfn(ks->pa_end + PAGE_SIZE - 1);
 		size = b_end - b_start;
-
+		print("physical memory [0x%lx - 0x%lx] -> used\n",
+		      pfn_to_pa(b_start), pfn_to_pa(b_end));
 		bit_clear(b_bitmap, b_start, size);
 		*used += size;
 	}

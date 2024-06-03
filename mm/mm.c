@@ -32,6 +32,8 @@ static void init_phy_mem_ranges(void)
 		phy_mem_ranges[i].addr = mmio_read64(HWCFG_REG_DATA_0);
 		phy_mem_ranges[i].type = mmio_read64(HWCFG_REG_DATA_2);
 		phy_mem_ranges[i].size = size;
+		print("Available physical memory range: 0x%lx - 0x%lx size: 0x%lx\n", phy_mem_ranges[i].addr,
+		      phy_mem_ranges[i].addr + size, size);
 		++i;
 		mmio_write(HWCFG_REG_CTL, 8, HWCFG_CTL_NEXT_ITEM);
 	}
