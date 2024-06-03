@@ -14,7 +14,7 @@ int start_kernel(void)
 	setup_idt_table_ist();
 
 	mm_early_init();
-
+	print("Boot successfully!!\n");
 	while(1) {;}
 	return 1;
 }
