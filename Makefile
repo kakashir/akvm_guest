@@ -31,7 +31,7 @@ $(asm_object): %.o: %.S $(h_object)
 $(c_object): %.o: %.c $(h_object)
 	$(cc) $(cc_flags) -c "$<" -o "$@"
 
-$(linker).out: $(linker)
+$(linker).out: $(linker) $(h_object)
 	$(cc) -I$(ROOT_DIR)/include -E -P -x c $(linker) > $(linker).out
 
 .PHONY SUBDIR: $(sub_dir)
