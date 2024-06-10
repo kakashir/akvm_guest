@@ -179,7 +179,7 @@ setup_tmp_long_mode_page_table:
 	inc %ecx
 	sub $X86_PAGE_SIZE_1G, %ebx
 	cmp $0, %ebx
-	jnz 1b
+	jg 1b
 
 	/* 2 entries in level 4 for 1:1 and KERNEL_LOAD_VA_ADDR mapping */
 	mov $lv_3_page_table + 0x003, %ecx
