@@ -71,7 +71,7 @@ static void setup_gdt(struct gdt_entry *gdt, int size)
 	gdt[sel_to_index(KERNEL_CS_64)] = GDT_ENTRY_64(GDT_TYPE_CODE);
 
 	load_gdt(&desc);
-	flush_segment_cache();
+	flush_segment_cache(KERNEL_DS_64, KERNEL_CS_64);
 }
 
 static void setup_tss(struct gdt_entry *gdt, struct tss64_segment *tss,

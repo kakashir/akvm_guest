@@ -185,14 +185,14 @@ flush_segment_cache:
 	push %rbp
 	mov %rsp, %rbp
 
-	mov $KERNEL_DS_64, %eax
+	mov %edi, %eax
 	mov %eax, %ds
 	mov %eax, %es
 	mov %eax, %ss
 	mov %eax, %fs
 	mov %eax, %gs
 
-	push $KERNEL_CS_64
+	pushq %rsi
 	pushq $1f
 	retfq
 1:
