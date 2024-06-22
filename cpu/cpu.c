@@ -8,5 +8,6 @@
 
 int cpu_early_init(void)
 {
+	arch_cpu_early_init();
 	print("%s called\n", __func__);
 }
