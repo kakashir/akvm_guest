@@ -255,3 +255,39 @@ void write_cr(int cr, unsigned long val)
 		;
 	}
 }
+
+void cpuid(int leaf, int sub_leaf,
+	   int *eax, int *ebx, int *ecx, int *edx)
+{
+	asm volatile("cpuid"
+		     :"=a"(*eax),"=b"(*ebx),"=c"(*ecx),"=d"(*edx)
+		     :"a"(leaf),"c"(sub_leaf));
+}
+
+void cpuid_eax(int leaf, int sub_leaf, int *eax)
+{
+	asm volatile("cpuid"
+		     :"=a"(*eax)
+		     :"a"(leaf),"c"(sub_leaf));
+}
+
+void cpuid_ebx(int leaf, int sub_leaf, int *ebx)
+{
+	asm volatile("cpuid"
+		     :"=b"(*ebx)
+		     :"a"(leaf),"c"(sub_leaf));
+}
+
+void cpuid_ecx(int leaf, int sub_leaf, int *ecx)
+{
+	asm volatile("cpuid"
+		     :"=c"(*ecx)
+		     :"a"(leaf),"c"(sub_leaf));
+}
+
+void cpuid_edx(int leaf, int sub_leaf, int *edx)
+{
+	asm volatile("cpuid"
+		     :"=d"(*edx)
+		     :"a"(leaf),"c"(sub_leaf));
+}

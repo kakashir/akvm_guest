@@ -128,6 +128,15 @@ void write_dr(int index, unsigned long val);
 unsigned long read_cr(int cr);
 void write_cr(int cr, unsigned long val);
 
+void cpuid(int leaf, int sub_leaf,
+	   int *eax, int *ebx, int *ecx, int *edx);
+void cpuid(int leaf, int sub_leaf,
+	   int *eax, int *ebx, int *ecx, int *edx);
+void cpuid_eax(int leaf, int sub_leaf, int *eax);
+void cpuid_ebx(int leaf, int sub_leaf, int *ebx);
+void cpuid_ecx(int leaf, int sub_leaf, int *ecx);
+void cpuid_edx(int leaf, int sub_leaf, int *edx);
+
 #define sel_to_index(x) ((x) >> 3)
 
 #endif
