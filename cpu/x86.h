@@ -111,6 +111,8 @@ struct cpu_data {
 	struct gdt_entry gdt[5];
 	struct tss64_segment tss;
 
+	void *kernel_stack_top;
+	void *kernel_ist_stack_top;
 };
 
 int arch_cpu_early_init(void);

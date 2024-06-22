@@ -111,10 +111,14 @@ void x86_excep_intr_common_handler(struct inter_excep_regs *regs)
 
 int arch_cpu_early_init(void)
 {
+	boot_cpu.kernel_stack_top = stack_top_64;
+	boot_cpu.kernel_ist_stack_top = ist_stack_top_64;
+
 	setup_idt64_table(boot_cpu.idt, sizeof(boot_cpu.idt));
 	setup_gdt(boot_cpu.gdt, sizeof(boot_cpu.gdt));
 	setup_tss(boot_cpu.gdt, &boot_cpu.tss, sizeof(boot_cpu.tss));
 	setup_idt64_table_ist(boot_cpu.idt);
+
 	print("%s called\n", __func__);
 	return 0;
 }
