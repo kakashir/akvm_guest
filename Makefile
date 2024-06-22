@@ -6,10 +6,11 @@ h_object = $(shell find $(ROOT_DIR) -maxdepth 1 -name "*.h" 2>/dev/null)
 h_object += $(shell find $(ROOT_DIR)/include -name "*.h" 2>/dev/null)
 linker = linker.lds.S
 
-sub_dir = lib mm
+sub_dir = lib mm cpu
 clean_sub_dir = $(sub_dir)
 sub_c_object = $(shell find $(ROOT_DIR)/lib -name "*.o" 2>/dev/null)
 sub_c_object += $(shell find $(ROOT_DIR)/mm -name "*.o" 2>/dev/null)
+sub_c_object += $(shell find $(ROOT_DIR)/cpu -name "*.o" 2>/dev/null)
 
 cc = gcc
 flags = -O0 -g -no-pie -fno-pic -mcmodel=kernel -nostartfiles \
