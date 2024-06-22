@@ -4,7 +4,7 @@
 #include <types.h>
 #include <compiler.h>
 #include <config.h>
-#include <x86.h>
+#include <cpu/cpu.h>
 
 struct idt64_entry {
 	unsigned int offset0_15:16;
@@ -105,7 +105,7 @@ struct tss64_segment {
 
 /* runtime supporting */
 struct cpu_data {
-	struct idt64_entry idt[IDT_MAX_ENTRY_NR];
+	struct idt64_entry idt[MAX_VECTOR_NUMBER];
 
 	/* 1 null (8byte)/ 1 code(8bytes)/1 data(8bytes)/1 64bit TSS(16 bytes)*/
 	struct gdt_entry gdt[5];

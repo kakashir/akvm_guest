@@ -1,7 +1,7 @@
 ROOT_DIR = $(shell pwd)
 
 asm_object = start16.o start32.o start64.o
-c_object = main.o x86.o io.o
+c_object = main.o io.o
 h_object = $(shell find $(ROOT_DIR) -maxdepth 1 -name "*.h" 2>/dev/null)
 h_object += $(shell find $(ROOT_DIR)/include -name "*.h" 2>/dev/null)
 linker = linker.lds.S

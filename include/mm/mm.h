@@ -4,7 +4,6 @@
 #include <types.h>
 #include <compiler.h>
 #include <config.h>
-#include <x86.h>
 
 extern u64 early_page_table_root;
 int mm_early_init(void);

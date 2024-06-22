@@ -1,9 +1,7 @@
 #ifndef __PAGING_H
 #define __PAGING_H
 
-#include <x86.h>
 #include <config.h>
-
 #include <cpu/cpu.h>
 
 #define PAGE_SIZE X86_PAGE_SIZE

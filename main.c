@@ -1,6 +1,5 @@
 #include <types.h>
 #include <compiler.h>
-#include <x86.h>
 #include <io.h>
 #include <lib/print.h>
 #include <mm/mm.h>

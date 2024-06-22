@@ -2,7 +2,6 @@
 #include <config.h>
 #include <ld.h>
 #include <io.h>
-#include <x86.h>
 #include <lib/bitops.h>
 #include <lib/print.h>
 #include <lib/linker.h>

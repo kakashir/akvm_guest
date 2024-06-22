@@ -1,8 +1,6 @@
 #include <lib/print.h>
-#include "x86.h"
-#include <x86.h>
 #include <vm_service.h>
-
+#include "x86.h"
 #include "entry.h"
 
 static struct cpu_data boot_cpu;
