@@ -18,6 +18,7 @@ int start_kernel(void)
 
 	mm_early_init();
 	print("Boot successfully!!\n");
+	asm volatile ("int $0x40\n\r");
 	while(1) {;}
 	return 1;
 }
