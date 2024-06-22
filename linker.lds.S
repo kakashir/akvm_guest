@@ -11,13 +11,13 @@ SECTIONS
 
 	.data16 : ALIGN(4096) {
 		__data16_start = .;
-		start16.o(.data16)
+		*(.data16)
 		__data16_end = .;
 	}
 
 	.text16 : ALIGN(4096) {
 		__text16_start = .;
-        start16.o(.text16);
+		*(.text16);
 		__text16_end = .;
     }
 
@@ -28,13 +28,13 @@ SECTIONS
 
 	.data32 : ALIGN(4096) {
 		__data32_start = .;
-		start32.o(.data32)
+		*(.data32)
 		__data32_end = .;
 	}
 
 	.text32 : ALIGN(4096) {
 		__text32_start = .;
-		start32.o(.text32)
+		*(.text32)
 		__text32_end = .;
 	}
 
@@ -43,7 +43,7 @@ SECTIONS
 	.text64_low : ALIGN(4096) {
 		__kernel_64_start = .;
 		__kernel_64_low_start = .;
-		start64.o(.text64_low)
+		*(.text64_low)
 	}
 
 	__kernel_64_low_end = .;

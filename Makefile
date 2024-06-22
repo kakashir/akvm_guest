@@ -1,6 +1,5 @@
 ROOT_DIR = $(shell pwd)
 
-asm_object = start16.o start32.o start64.o
 c_object = main.o io.o
 h_object = $(shell find $(ROOT_DIR) -maxdepth 1 -name "*.h" 2>/dev/null)
 h_object += $(shell find $(ROOT_DIR)/include -name "*.h" 2>/dev/null)
@@ -23,11 +22,8 @@ flags = -O0 -g -no-pie -fno-pic -mcmodel=kernel -nostartfiles \
 cc_flags = $(flags)
 asm_cc_flags = $(flags) -D__ASM__
 
-binary: $(asm_object) $(c_object) SUBDIR $(linker).out
-	$(CC) $(flags) -T $(linker).out $(asm_object) $(c_object) $(sub_c_object)
-
-$(asm_object): %.o: %.S $(h_object)
-	$(cc) $(asm_cc_flags) -c "$<" -o "$@"
+binary: $(c_object) SUBDIR $(linker).out
+	$(CC) $(flags) -T $(linker).out $(c_object) $(sub_c_object)
 
 $(c_object): %.o: %.c $(h_object)
 	$(cc) $(cc_flags) -c "$<" -o "$@"
