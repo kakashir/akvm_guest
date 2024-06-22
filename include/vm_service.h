@@ -35,4 +35,7 @@ struct vm_service_arg {
 
 }__attribute__((packed));
 
+struct vm_service_arg;
+void vm_service(struct vm_service_arg *arg);
+
 #endif

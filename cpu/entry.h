@@ -1,5 +1,5 @@
-#ifndef __ENTRY_H
-#define __ENTRY_H
+#ifndef __CPU_ENTRY_H
+#define __CPU_ENTRY_H
 
 void __idt_intr_one_start(void);
 extern unsigned long idt_intr_entry_point_size;
@@ -26,15 +26,12 @@ void asm_excep_19(void);
 void asm_excep_20(void);
 void asm_excep_21(void);
 
-struct vm_service_arg;
-void vm_service(struct vm_service_arg *arg);
-
 struct idt64_desc;
 void load_idt(struct idt64_desc *desc);
 
 struct gdt64_desc;
 void load_gdt(struct gdt64_desc *desc);
-void flush_segment_cache(void);
+void flush_segment_cache(unsigned int ds_sel, unsigned int cs_sel);
 
 extern void* ist_stack_top_64;
 extern void* stack_top_64;

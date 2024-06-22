@@ -1,7 +1,9 @@
 #include <lib/print.h>
 #include "x86.h"
 #include <x86.h>
-#include <entry.h>
+#include <vm_service.h>
+
+#include "entry.h"
 
 static struct cpu_data boot_cpu;
 
@@ -94,6 +96,19 @@ static void setup_tss(struct gdt_entry *gdt, struct tss64_segment *tss,
 	*p = GDT_TSS_64(GDT_TYPE_TSS,
 			(unsigned long)tss, tss_size);
 	load_tss(KERNEL_TSS_64);
+}
+
+void x86_excep_intr_common_handler(struct inter_excep_regs *regs)
+{
+	struct vm_service_arg arg = {
+		.type = VM_SERVICE_DEBUG,
+		.raw.arg0 = 0xbadULL,
+		.raw.arg1 = regs->vector,
+		.raw.arg2 = regs->rip,
+		.raw.arg3 = regs->rsp,
+		.raw.arg4 = (unsigned long)regs,
+	};
+	vm_service(&arg);
 }
 
 int arch_cpu_early_init(void)
