@@ -4,6 +4,8 @@
 #include <x86.h>
 #include <config.h>
 
+#include <cpu/cpu.h>
+
 #define PAGE_SIZE X86_PAGE_SIZE
 #define PAGE_PRESENT X86_PAGE_PRESENT
 #define PAGE_WRITE X86_PAGE_WRITE

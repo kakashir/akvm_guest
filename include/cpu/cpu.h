@@ -4,6 +4,7 @@
 #include <types.h>
 #include <compiler.h>
 #include <config.h>
+#include <asm/x86.h>
 
 int cpu_early_init(void);
 
