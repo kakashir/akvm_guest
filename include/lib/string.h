@@ -9,5 +9,5 @@ void dec2a(int d, u8 *buf);
 void hex2a(int d, u8 *buf);
 void* memset(void* addr, u8 byte, u64 size);
 #define zero_memory(a, s) memset(a, 0, s);
-
+int memcmp(const void* l, const void* r, u64 size);
 #endif

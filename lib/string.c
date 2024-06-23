@@ -72,3 +72,17 @@ void* memset(void *addr, u8 byte, u64 size)
 
 	return addr;
 }
+
+int memcmp(const void *l, const void *r, u64 size)
+{
+	const u8 *l8 = l;
+	const u8 *r8 = r;
+	int d;
+
+	for (u64 i = 0; i < size; ++i) {
+		d = l8[i] - r8[i];
+		if (d)
+			return d;
+	}
+	return 0;
+}
