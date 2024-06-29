@@ -42,8 +42,8 @@
   here for do memory mapping firstly. change this to use cpu
   init data after that is done.
 */
-#define MAX_PA_BITS  39
-#define PAGE_PA_MASK BITS_ULL(12, 39)
+#define MAX_PA_BITS  cpu_pa_bits()
+#define PAGE_PA_MASK BITS_ULL(12, MAX_PA_BITS)
 #define PAGE_PA(p) ((p) & PAGE_PA_MASK)
 
 #define SET_PG_ROOT(r) write_cr(3, r)
