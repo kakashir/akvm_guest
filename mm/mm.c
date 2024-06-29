@@ -50,18 +50,42 @@ static int init_kernel_page_mapping(void)
 	if (!b_allocator_get_page_top(&kernel_page_table))
 		return -ENOMEM;
 
-	for_each_phy_mem_range(p)
-		r = map_page(kernel_page_table,  va(p->addr), p->addr, p->size,
+	for_each_phy_mem_range(p) {
+		r = map_page(kernel_page_table, va(p->addr), p->addr, p->size,
 			     MAX_PAGE_LEVEL, pa_to_va_1_to_1);
+		if (r != ALIGN_DOWN(p->size - 1, PAGE_SIZE)) {
+			print("Failed to setup kernel mapping for physical memory [0x%lx, 0x%lx)\n",
+			      p->addr, p->addr + p->size);
+			r = -EFAULT;
+			break;
+		}
+		print("kernel mapping for physical memory: [0x%lx, 0x%lx) -> [0x%lx, 0x%lx)\n",
+		      p->addr, p->addr + p->size, va(p->addr), va(p->addr + p->size));
+	}
+
 	if (r > 0)
-		for_each_kernel_section(ks)
+		for_each_kernel_section(ks) {
+			u64 size = ks->pa_end - ks->pa_start;
+
 			r = map_page(kernel_page_table,
 				     KERNEL_LOAD_VA(ks->pa_start),
-				     ks->pa_start, ks->pa_end - ks->pa_start,
+				     ks->pa_start, size,
 				     MAX_PAGE_LEVEL, pa_to_va_1_to_1);
+			if (r != ALIGN_DOWN(size - 1, PAGE_SIZE)) {
+				print("Failed to setup kernel mapping for kernel image [0x%lx, 0x%lx)\n",
+				      ks->pa_start, ks->pa_start + size);
+				r = -EFAULT;
+				break;
+			}
+			print("kernel mapping for kernel image: [0x%lx, 0x%lx) -> [0x%lx, 0x%lx)\n",
+			      ks->pa_start, ks->pa_start + size,
+			      KERNEL_LOAD_VA(ks->pa_start), KERNEL_LOAD_VA(ks->pa_start + size));
+		}
+
 	if (r > 0) {
 		SET_PG_ROOT((unsigned long)kernel_page_table);
 		print("Kernel page table root: 0x%lx\n", kernel_page_table);
+		r = 0;
 	}
 
 	return r;
