@@ -1,4 +1,6 @@
 #include <lib/print.h>
+#include <lib/string.h>
+#include <lib/debug.h>
 #include <vm_service.h>
 #include "x86.h"
 #include "entry.h"
@@ -111,6 +113,18 @@ void x86_excep_intr_common_handler(struct inter_excep_regs *regs)
 
 int arch_cpu_early_init(void)
 {
+	u8 signature[12];
+	int unused;
+
+	cpuid(0, 0, &unused,
+	      (int*)signature, (int*)(signature + 8), (int*)(signature + 4));
+
+	if (memcmp("GenuineIntel", signature, sizeof(signature))) {
+		print("The cpu vendor is not supproted");
+		return -1;
+	}
+	print("Detected cpu vendor: Intel\n");
+
 	boot_cpu.kernel_stack_top = stack_top_64;
 	boot_cpu.kernel_ist_stack_top = ist_stack_top_64;
 
@@ -119,7 +133,6 @@ int arch_cpu_early_init(void)
 	setup_tss(boot_cpu.gdt, &boot_cpu.tss, sizeof(boot_cpu.tss));
 	setup_idt64_table_ist(boot_cpu.idt);
 
-	print("%s called\n", __func__);
 	return 0;
 }
 

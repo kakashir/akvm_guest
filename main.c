@@ -10,7 +10,9 @@ int start_kernel(void)
 {
 	int r;
 
-	cpu_early_init();
+	r = cpu_early_init();
+	if (r)
+		panic("Failed to do cpu_early_init()");
 	r = mm_early_init();
 	if (r)
 		panic("Failed to do mm_early_init()");
