@@ -15,6 +15,10 @@ SECTIONS
 		__data16_end = .;
 	}
 
+	.rodata16 : ALIGN(4096)  {
+		*(.rodata16)
+	}
+
 	.text16 : ALIGN(4096) {
 		__text16_start = .;
 		*(.text16);
@@ -30,6 +34,10 @@ SECTIONS
 		__data32_start = .;
 		*(.data32)
 		__data32_end = .;
+	}
+
+	.rodata32 : ALIGN(4096)  {
+		*(.rodata32)
 	}
 
 	.text32 : ALIGN(4096) {
@@ -64,6 +72,10 @@ SECTIONS
 		*(.bss64)
 		*(.bss)
 		__bss64_end = .;
+	}
+
+	.rodata : ALIGN(4096)  {
+		*(.rodata)
 	}
 
 	.text64 : ALIGN(4096)  {
