@@ -40,13 +40,15 @@ SECTIONS
 
 	__kernel_32_end = .;
 
+	__kernel_64_start = .;
+
+	__kernel_64_low_start = .;
 	.text64_low : ALIGN(4096) {
-		__kernel_64_start = .;
-		__kernel_64_low_start = .;
+
 		*(.text64_low)
 	}
-
 	__kernel_64_low_end = .;
+
 	__kernel_64_high_start = .;
 
 	. = KERNEL_LOAD_VA_ADDR + __kernel_64_low_end;
@@ -57,14 +59,14 @@ SECTIONS
 		__data64_end = .;
 	}
 
-	.bss64  : ALIGN(1) {
+	.bss64 : ALIGN(1) {
 		__bss64_start = .;
 		*(.bss64)
 		*(.bss)
 		__bss64_end = .;
 	}
 
-	.text64 : ALIGN(8)  {
+	.text64 : ALIGN(4096)  {
 		__text64_start = .;
 		*(.text64)
 		*(.text)
@@ -72,7 +74,9 @@ SECTIONS
 	}
 
 	__kernel_64_high_end = . - KERNEL_LOAD_VA_ADDR;
-	__kernel_64_end = .;
+
+	__kernel_64_end = . - KERNEL_LOAD_VA_ADDR;
+
 	__kernel_size__ = (__kernel_16_end - __kernel_16_start) +
 					  (__kernel_32_end - __kernel_32_start) +
 					  (__kernel_64_end - __kernel_64_start);
