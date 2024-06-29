@@ -124,6 +124,89 @@ struct inter_excep_regs {
 	u64 ss;
 };
 
+struct panic_regs {
+	u64 cr3;
+	u64 cr2;
+	u64 cr0;
+	u64 ss;
+	u64 cs;
+	u64 rax;
+	u64 rbx;
+	u64 rcx;
+	u64 rdx;
+	u64 rsi;
+	u64 rdi;
+	u64 r8;
+	u64 r9;
+	u64 r10;
+	u64 r11;
+	u64 r12;
+	u64 r13;
+	u64 r14;
+	u64 r15;
+	u64 rflags;
+	u64 rbp;
+	u64 rsp;
+};
+
+/*This leads to unbalanced stack, know why you call this! */
+#define generate_panic_regs_dump(r) \
+	asm volatile("pushq %%rsp\n\r" \
+		     "pushq %%rbp\n\r" \
+		     "pushfq\n\r" \
+		     "pushq %%r15\n\r" \
+		     "pushq %%r14\n\r" \
+		     "pushq %%r13\n\r" \
+		     "pushq %%r12\n\r" \
+		     "pushq %%r11\n\r" \
+		     "pushq %%r10\n\r" \
+		     "pushq %%r9\n\r" \
+		     "pushq %%r8\n\r" \
+		     "pushq %%rdi\n\r" \
+		     "pushq %%rsi\n\r" \
+		     "pushq %%rdx\n\r" \
+		     "pushq %%rcx\n\r" \
+		     "pushq %%rbx\n\r" \
+		     "pushq %%rax\n\r" \
+		     "movq %%cs, %%rax\n\r" \
+		     "pushq %%rax\n\r" \
+		     "movq %%ss, %%rax\n\r" \
+		     "pushq %%rax\n\r" \
+		     "movq %%cr0, %%rax\n\r" \
+		     "pushq %%rax\n\r" \
+		     "movq %%cr2, %%rax\n\r" \
+		     "pushq %%rax\n\r" \
+		     "movq %%cr3, %%rax\n\r" \
+		     "pushq %%rax\n\r" \
+		     "mov %%rsp, %0\n\r" \
+		     :"=r"(r) \
+		)
+
+#define __DUMP_R(r, _r, _R) print("  "#_R": 0x%lx\n\r", r->_r)
+#define show_panic_regs_dump(r) \
+	__DUMP_R(r, rax, RAX);	\
+	__DUMP_R(r, rbx, RBX);	\
+	__DUMP_R(r, rcx, RCX);	\
+	__DUMP_R(r, rdx, RDX);	\
+	__DUMP_R(r, rsi, RSI);	\
+	__DUMP_R(r, rdi, RDI);	\
+	__DUMP_R(r, rbp, RBP);	\
+	__DUMP_R(r, rsp, RSP);	\
+	__DUMP_R(r, r8, R8);	\
+	__DUMP_R(r, r9, R9);	\
+	__DUMP_R(r, r10, R10);	\
+	__DUMP_R(r, r11, R11);	\
+	__DUMP_R(r, r12, R12);	\
+	__DUMP_R(r, r13, R13);	\
+	__DUMP_R(r, r14, R14);	\
+	__DUMP_R(r, r15, R15);	  \
+	__DUMP_R(r, rflags, RFLAGS);		\
+	__DUMP_R(r, cr0, CR0);			\
+	__DUMP_R(r, cr2, CR2);			\
+	__DUMP_R(r, cr3, CR3);			\
+	__DUMP_R(r, cs, SS);			\
+	__DUMP_R(r, ss, CS);
+
 #endif
 
 #endif

@@ -13,4 +13,6 @@
 
 void debug_output(u64 arg0, u64 arg1, u64 arg2, u64 arg3, u64 arg4, u64 arg5);
 
+void panic(const char *msg);
+
 #endif
