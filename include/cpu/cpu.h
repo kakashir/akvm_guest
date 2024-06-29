@@ -7,5 +7,6 @@
 #include <asm/x86.h>
 
 int cpu_early_init(void);
+int cpu_pa_bits(void);
 
 #endif

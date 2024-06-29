@@ -113,6 +113,9 @@ struct cpu_data {
 
 	void *kernel_stack_top;
 	void *kernel_ist_stack_top;
+
+	int pa_bits;
+	int va_bits;
 };
 
 int arch_cpu_early_init(void);

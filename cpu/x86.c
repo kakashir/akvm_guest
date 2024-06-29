@@ -113,17 +113,27 @@ void x86_excep_intr_common_handler(struct inter_excep_regs *regs)
 
 int arch_cpu_early_init(void)
 {
+	const char* vendor_signature = "GenuineIntel";
 	u8 signature[12];
-	int unused;
+	int val = 0;
 
-	cpuid(0, 0, &unused,
+	cpuid(0, 0, &val,
 	      (int*)signature, (int*)(signature + 8), (int*)(signature + 4));
 
-	if (memcmp("GenuineIntel", signature, sizeof(signature))) {
+	if (memcmp(vendor_signature, signature, sizeof(signature))) {
 		print("The cpu vendor is not supproted");
 		return -1;
 	}
-	print("Detected cpu vendor: Intel\n");
+	print("Detected cpu vendor signature: %s\n", vendor_signature);
+
+	cpuid_eax(0x80000000, 0, &val);
+	if (val < 0x80000008) {
+		print("cpuid 0x80000008 is not supported\n");
+		return -1;
+	}
+	cpuid_eax(0x80000008, 0, &val);
+	boot_cpu.pa_bits = val & 0xff;
+	boot_cpu.va_bits = (val >> 8) & 0xff;
 
 	boot_cpu.kernel_stack_top = stack_top_64;
 	boot_cpu.kernel_ist_stack_top = ist_stack_top_64;
@@ -134,6 +144,11 @@ int arch_cpu_early_init(void)
 	setup_idt64_table_ist(boot_cpu.idt);
 
 	return 0;
+}
+
+int cpu_pa_bits(void)
+{
+	return boot_cpu.pa_bits;
 }
 
 unsigned long read_dr(int index)
