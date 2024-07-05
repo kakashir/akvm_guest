@@ -106,6 +106,8 @@ struct tss64_segment {
 /* runtime supporting */
 struct cpu_data {
 	struct idt64_entry idt[MAX_VECTOR_NUMBER];
+	excep_intr_handler excep_intr_handler[MAX_VECTOR_NUMBER];
+	excep_intr_handler excep_intr_fallback_handler;
 
 	/* 1 null (8byte)/ 1 code(8bytes)/1 data(8bytes)/1 64bit TSS(16 bytes)*/
 	struct gdt_entry gdt[5];

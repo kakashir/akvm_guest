@@ -100,7 +100,14 @@ static void setup_tss(struct gdt_entry *gdt, struct tss64_segment *tss,
 
 void x86_excep_intr_common_handler(struct inter_excep_regs *regs)
 {
-	struct vm_service_arg arg = {
+	struct vm_service_arg arg;
+
+	if (boot_cpu.excep_intr_handler[regs->vector])
+		return boot_cpu.excep_intr_handler[regs->vector](regs);
+	if (boot_cpu.excep_intr_fallback_handler)
+		return boot_cpu.excep_intr_fallback_handler(regs);
+
+	arg = (struct vm_service_arg) {
 		.type = VM_SERVICE_DEBUG,
 		.raw.arg0 = 0xbadULL,
 		.raw.arg1 = regs->vector,
@@ -109,6 +116,31 @@ void x86_excep_intr_common_handler(struct inter_excep_regs *regs)
 		.raw.arg4 = (unsigned long)regs,
 	};
 	vm_service(&arg);
+}
+
+void register_excep_intr_handler(unsigned int vector,
+				 excep_intr_handler handler)
+{
+	if ((vector >= MAX_VECTOR_NUMBER) &&
+	    (vector != INTR_EXCEP_FAILBACK))
+		panic("set vector handler: vector out of range");
+
+	if (vector < MAX_VECTOR_NUMBER) {
+		boot_cpu.excep_intr_handler[vector] = handler;
+		return;
+	}
+	boot_cpu.excep_intr_fallback_handler = handler;
+}
+
+excep_intr_handler get_excep_intr_handler(unsigned int vector)
+{
+	if ((vector >= MAX_VECTOR_NUMBER) &&
+	    (vector != INTR_EXCEP_FAILBACK))
+		panic("get vector handler: vector out of range");
+
+	if (vector < MAX_VECTOR_NUMBER)
+		return boot_cpu.excep_intr_handler[vector];
+	return boot_cpu.excep_intr_fallback_handler;
 }
 
 int arch_cpu_early_init(void)
@@ -137,6 +169,8 @@ int arch_cpu_early_init(void)
 
 	boot_cpu.kernel_stack_top = stack_top_64;
 	boot_cpu.kernel_ist_stack_top = ist_stack_top_64;
+	zero_memory(boot_cpu.excep_intr_handler,
+		    sizeof(boot_cpu.excep_intr_handler));
 
 	setup_idt64_table(boot_cpu.idt, sizeof(boot_cpu.idt));
 	setup_gdt(boot_cpu.gdt, sizeof(boot_cpu.gdt));

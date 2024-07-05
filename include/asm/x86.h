@@ -79,6 +79,7 @@ typedef u64 x86_pte_t;
 #define IDT_TYPE_INTR 0xe
 #define INTR_VECTOR_BEGIN 32
 #define MAX_VECTOR_NUMBER 256
+#define INTR_EXCEP_FAILBACK 0xffffffff
 
 #define GDT_TYPE_DATA 0x2
 #define GDT_TYPE_CODE 0xa
